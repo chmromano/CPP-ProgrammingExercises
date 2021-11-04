@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
-#include <cstring>
 #include <limits>
 
 using namespace std;
@@ -32,20 +31,22 @@ int main() {
         }
     }
 
+    string index("Index"), number("Number");
+
     cout << "\nIndex | Number" << endl;
 
-    int *numbers;
-    numbers = new int[n_numbers];
+    int *numbers_array;
+    numbers_array = new int[n_numbers];
     // Generate the random numbers.
     for (int i = 0; i < n_numbers; i++) {
-        numbers[i] = rand() % 100;
-        cout << setw(static_cast<int> (strlen("Index"))) << i << " | " << setw(static_cast<int> (strlen("Number"))) << numbers[i]
+        numbers_array[i] = rand() % 100;
+        cout << setw(static_cast<int> (index.size())) << i << " | " << setw(static_cast<int> (number.size())) << numbers_array[i]
              << endl;
     }
 
-    cout << "\nMean: " << mean(numbers, n_numbers) << endl;
+    cout << "\nMean: " << mean(numbers_array, n_numbers) << endl;
 
-    delete numbers;
+    delete numbers_array;
     return 0;
 }
 

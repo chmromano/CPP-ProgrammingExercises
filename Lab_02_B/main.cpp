@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <iomanip>
-#include <cstring>
 
 #define STOP "stop"
 
@@ -39,15 +38,16 @@ int main() {
 
     //Print results. Check if vector is empty.
     if (str_vect.empty()) {
-        cout << "\nNo string were entered." << endl;
+        cout << "\nNo strings were entered." << endl;
         cout << "Vector size: " << str_vect.size() << ", vector capacity: " << str_vect.capacity() << endl;
     } else {
+        string index("Index");
+
         cout << "\nIndex | String" << endl;
 
         i = 0;
         for (const string &str: str_vect) {
-            cout << setw(static_cast<int> (strlen("Index"))) << i << " | " << str
-                 << endl;
+            cout << setw(static_cast<int> (index.size())) << i << " | " << str << endl;
             i++;
         }
 
