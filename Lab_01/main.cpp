@@ -37,7 +37,7 @@ int main() {
     // Generate the random numbers.
     for (int i = 0; i < n_numbers; i++) {
         numbers[i] = rand() % 100;
-        cout << setw((int) strlen("Index")) << i << " | " << setw((int) strlen("Number")) << numbers[i]
+        cout << setw(static_cast<int> (strlen("Index"))) << i << " | " << setw(static_cast<int> (strlen("Number"))) << numbers[i]
              << endl;
     }
 
