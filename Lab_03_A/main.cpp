@@ -33,8 +33,10 @@ int main() {
         }
     }
 
+    cout << endl;
+
     if (doubles_vect.empty()) {
-        cout << "\nNo numbers were entered." << endl;
+        cout << "No numbers were entered." << endl;
     } else {
         //Sort the vector.
         sort(doubles_vect.begin(), doubles_vect.end());
