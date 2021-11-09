@@ -28,8 +28,9 @@ string find_field(const string &xml, string tag_name) {
     // Generate start and end tags.
     string start_tag("<" + tag_name + ">"), end_tag("</" + tag_name + ">");
 
-    //Find start and end position of searched item's string.
-    int start_pos = xml.find(start_tag) + start_tag.size();
+    // Find start and end position of searched item's string.
+    int start_pos = xml.find(start_tag);
+    if (start_pos != string::npos) start_pos += start_tag.size(); // Execute only if first item is found.
     int end_pos = xml.find(end_tag);
 
     if (start_pos == string::npos || end_pos == string::npos) {
