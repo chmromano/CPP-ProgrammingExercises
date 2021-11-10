@@ -47,13 +47,14 @@ int main() {
 
 //Reverse strings, sort vector, reverse vector.
 void backwards(vector<string> &vect) {
-    for (auto &i: vect) {
+    for (string &i: vect) {
         reverse(i.begin(), i.end());
     }
     sort(vect.begin(), vect.end());
     reverse(vect.begin(), vect.end());
 }
 
+//Simple function to print a vector.
 void print_vect(const vector<string> &vect) {
     for (const string &i: vect) {
         cout << i << endl;

@@ -26,7 +26,7 @@ int main() {
             //Append to vector.
             doubles_vect.push_back(tmp);
 
-            //Count the digits now.
+            //Count digits.
             int digits = count_digits(tmp) + 4; //4 to account for the '.' and 3 decimals.
             if (digits > spacing) spacing = digits;
         } else {
