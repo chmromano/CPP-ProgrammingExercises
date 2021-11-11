@@ -36,7 +36,7 @@ void Time::read(const char *str) {
     } while (!valid_input);
 }
 
-bool Time::lessThan(Time time) {
+bool Time::lessThan(Time time) const {
     bool is_less = false;
     if (h < time.h) {
         is_less = true;
@@ -48,7 +48,7 @@ bool Time::lessThan(Time time) {
     return is_less;
 }
 
-Time Time::subtract(Time time) {
+Time Time::subtract(Time time) const {
     Time duration;
     duration.h = h - time.h;
     duration.min = min - time.min;
@@ -59,7 +59,7 @@ Time Time::subtract(Time time) {
     return duration;
 }
 
-void Time::display() {
+void Time::display() const {
     std::cout << std::setiosflags(std::ios::right);
     std::cout << std::setfill('0') << std::setw(2) << h;
     std::cout << ":" << std::setfill('0') << std::setw(2) << min << std::endl;

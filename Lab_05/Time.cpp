@@ -36,7 +36,7 @@ void Time::read(const char *str) {
     } while (!valid_input);
 }
 
-bool Time::lessThan(Time time) {
+bool Time::lessThan(Time time) const {
     bool is_less = false;
     if (h < time.h) {
         is_less = true;
@@ -48,7 +48,7 @@ bool Time::lessThan(Time time) {
     return is_less;
 }
 
-Time Time::subtract(Time time) {
+Time Time::subtract(Time time) const {
     Time duration;
     duration.h = h - time.h;
     duration.min = min - time.min;
@@ -59,7 +59,7 @@ Time Time::subtract(Time time) {
     return duration;
 }
 
-void Time::display() {
+void Time::display() const {
     std::cout << std::setiosflags(std::ios::right);
     std::cout << std::setfill('0') << std::setw(2) << h;
     std::cout << ":" << std::setfill('0') << std::setw(2) << min << std::endl;
@@ -75,4 +75,76 @@ bool Time::valid_char(const std::string &str) {
         }
     }
     return valid;
+}
+
+Time Time::operator+(const Time &time) const {
+    Time result;
+    result.min = min + time.min;
+    while (result.min > 59) {
+        result.min -= 60;
+        result.h += 1;
+    }
+    result.h += h + time.h;
+    while (result.h > 23) {
+        result.h -= 24;
+    }
+    return result;
+}
+
+Time Time::operator-(const Time &time) const {
+    Time result;
+    result.min = min - time.min;
+    while (result.min < 0) {
+        result.min += 60;
+        result.h -= 1;
+    }
+    result.h += h - time.h;
+    while (result.h < 0) {
+        result.h += 24;
+    }
+    return result;
+}
+
+Time &Time::operator++() {
+    ++min;
+    if (min > 59) {
+        min -= 60;
+        h++;
+        if (h > 23) {
+            h -= 24;
+        }
+    }
+    return *this;
+}
+
+Time Time::operator++(int) {
+    Time old = *this;
+    ++min;
+    if (min > 59) {
+        min -= 60;
+        h++;
+        if (h > 23) {
+            h -= 24;
+        }
+    }
+    return old;
+}
+
+std::ostream &operator<<(std::ostream &out, const Time &time) {
+    out << std::setiosflags(std::ios::right);
+    out << std::setfill('0') << std::setw(2) << time.h;
+    out << ":" << std::setfill('0') << std::setw(2) << time.min;
+    return out;
+}
+
+bool Time::operator<(const Time &time) const {
+    bool is_less = false;
+    if (h < time.h) {
+        is_less = true;
+    } else if (h == time.h) {
+        if (min < time.min) {
+            is_less = true;
+        }
+    }
+    return is_less;
 }
