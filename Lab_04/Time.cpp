@@ -48,11 +48,14 @@ bool Time::lessThan(Time time) const {
 
 Time Time::subtract(Time time) const {
     Time duration;
-    duration.h = h - time.h;
     duration.min = min - time.min;
-    if (duration.min < 0) {
+    while (duration.min < 0) {
         duration.min += 60;
         duration.h -= 1;
+    }
+    duration.h += h - time.h;
+    while (duration.h < 0) {
+        duration.h += 24;
     }
     return duration;
 }
