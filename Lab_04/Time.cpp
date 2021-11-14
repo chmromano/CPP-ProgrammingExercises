@@ -4,18 +4,16 @@
 #include <iomanip>
 #include "Time.h"
 
+//Using initializers for default constructor.
 Time::Time(int h_, int min_) : h(h_), min(min_) {}
 
 void Time::read(const char *str) {
     bool valid_input = false;
     std::string line, str_h, str_min;
-
     do {
         std::cout << str << " (hh:mm, 0 <= hh <= 23, 0 <= mm <= 59):" << std::endl;
         getline(std::cin, line);
-
         int delimiter = static_cast<int> (line.find(':'));
-
         if (delimiter != std::string::npos) {
             //Get substrings and check if they contain non-digit characters.
             str_h = line.substr(0, delimiter);
