@@ -7,7 +7,9 @@
 
 class Time {
     friend std::ostream &operator<<(std::ostream &out, const Time &time);
+
     friend std::istream &operator>>(std::istream &in, Time &time);
+
 public:
     Time(int h_ = 0, int min_ = 0);
 

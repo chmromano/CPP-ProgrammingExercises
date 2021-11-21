@@ -11,7 +11,7 @@ class Day {
 public:
     Day(int day_ = 1, std::string month_ = "January");
 
-    bool from_str(const std::string &s);
+    bool from_str(const std::string &no_whitespace);
 
     std::string to_str();
 

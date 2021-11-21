@@ -2,18 +2,21 @@
 #include "Time.h"
 
 int main() {
-    while(1) {
-        Time time2;
+    // Since no main() function was given I made a simple loop to test the implemented methods.
+    // Enter an equal time to quit.
+    while (true) {
+        Time input;
         std::cout << "Enter a time: ";
-        std::cin >> time2;
-        Time time(23, 40);
-        std::cout << time << " <> " << time2 << std::endl << std::endl;
-        if (time2 == time) {
-            std::cout << "Same." << std::endl;
-        } else if (time2 > time) {
-            std::cout << "Greater." << std::endl;
-        } else if (time2 < time) {
-            std::cout << "Smaller." << std::endl;
+        std::cin >> input;
+        Time time(12, 30);
+        std::cout << time << " <> " << input << std::endl << std::endl;
+        if (input == time) {
+            std::cout << "Times are equal. Quitting..." << std::endl;
+            break;
+        } else if (input > time) {
+            std::cout << "Inputted time is greater." << std::endl;
+        } else if (input < time) {
+            std::cout << "Inputted time is smaller." << std::endl;
         }
     }
     return 0;

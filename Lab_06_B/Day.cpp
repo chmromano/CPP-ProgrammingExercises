@@ -5,33 +5,55 @@ using namespace std;
 Day::Day(int day_, string month_) : day(day_), month(month_) {}
 
 bool Day::from_str(const string &s) {
+    // Clear object.
+    day = 0;
     month.erase(month.begin(), month.end());
     list.erase(list.begin(), list.end());
 
-    string tmp_string;
-    int start = 0;
-    int end;
+    // Trim whitespace.
+    string tmp_string, no_whitespace;
+    const char *whitespace = " \t\n\r\f\v";
+    int start = static_cast<int>(s.find_first_not_of(whitespace));
+    int end = static_cast<int>(s.find_last_not_of(whitespace)) + 1;
+    if (end == s.size()) {
+        no_whitespace = s.substr(start, string::npos);
+    } else {
+        no_whitespace = s.substr(start, end - start);
+    }
 
-    end = static_cast<int>(s.find(32, start));
+    // Find day.
+    start = 0;
+    end = static_cast<int>(no_whitespace.find(32, start));
     if (end == string::npos) return false;
-    tmp_string = s.substr(start, end - start);
+    tmp_string = no_whitespace.substr(start, end - start);
     if (!valid_char(tmp_string)) return false;
     day = std::stoi(tmp_string);
 
-    start = end + 1;
-    end = static_cast<int>(s.find(32, start));
-    tmp_string = s.substr(start, end - start);
+    // Find month.
+    while (no_whitespace.at(end) == 32) end++; // Loop in case there are multiple spaces between string items.
+    start = end;
+    end = static_cast<int>(no_whitespace.find(32, start));
+    if (end == string::npos) return false;
+    tmp_string = no_whitespace.substr(start, end - start);
     if (!valid_month(tmp_string)) return false;
     month = tmp_string;
 
-    const int chars_in_time = 5;
+    // Find times.
     int times_found = 0;
-    while (true) {
+    bool run = true;
+    while (run) {
         Time tmp_time;
-        start = end + 1;
-        if (start > s.length()) break;
-        end = start + chars_in_time;
-        tmp_string = s.substr(start, end - start);
+        while (no_whitespace.at(end) == 32) end++;
+        start = end;
+        end = static_cast<int>(no_whitespace.find(32, start));
+
+        if (end == string::npos) {
+            tmp_string = no_whitespace.substr(start, string::npos);
+            run = false;
+        } else {
+            tmp_string = no_whitespace.substr(start, end - start);
+        }
+
         if (tmp_time.read_from_string(tmp_string)) {
             list.push_back(tmp_time);
             times_found++;
@@ -48,17 +70,19 @@ bool Day::from_str(const string &s) {
 }
 
 string Day::to_str() {
+    // Create stringstream, form string, and return string.
     ostringstream out;
     out << day << " " << month;
-    for (Time tmp: list) {
+    for (const Time &tmp: list) {
         out << " " << tmp;
     }
     return out.str();
 }
 
 void Day::dst(int offset) {
+    // Initialise Time object with hour = offset.
     Time dst_offset(offset);
-    for (auto &tmp: list) {
+    for (Time &tmp: list) {
         tmp = tmp + dst_offset;
     }
 }
@@ -66,7 +90,7 @@ void Day::dst(int offset) {
 bool Day::valid_char(const string &str) {
     bool valid = true;
     for (const char &ch: str) {
-        if (!std::isdigit(ch)) {
+        if (!isdigit(ch)) {
             valid = false;
             break;
         }
@@ -76,8 +100,8 @@ bool Day::valid_char(const string &str) {
 
 bool Day::valid_month(const string &str) {
     bool valid = false;
-    std::vector<std::string> month_list = {"January", "February", "March", "April", "May", "June", "July", "August",
-                                           "September", "October", "November", "December"};
+    vector<string> month_list = {"January", "February", "March", "April", "May", "June", "July", "August",
+                                 "September", "October", "November", "December"};
     for (const string &tmp: month_list) {
         if (str == tmp) {
             valid = true;

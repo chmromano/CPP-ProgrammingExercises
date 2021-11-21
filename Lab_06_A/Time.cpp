@@ -17,7 +17,7 @@ void Time::read(const char *str) {
             //Get substrings and check if they contain non-digit characters.
             str_h = line.substr(0, delimiter);
             str_min = line.substr(delimiter + 1, std::string::npos);
-            if (Time::valid_char(str_h) && Time::valid_char(str_min)) {
+            if (valid_char(str_h) && valid_char(str_min) && !str_h.empty() && !str_min.empty()) {
                 //Convert string to integer and check that they fall within allowed mm and hh ranges.
                 int tmp_h, tmp_min;
                 tmp_h = std::stoi(str_h);
@@ -134,7 +134,7 @@ std::istream &operator>>(std::istream &in, Time &time) {
             //Get substrings and check if they contain non-digit characters.
             str_h = line.substr(0, delimiter);
             str_min = line.substr(delimiter + 1, std::string::npos);
-            if (Time::valid_char(str_h) && Time::valid_char(str_min)) {
+            if (Time::valid_char(str_h) && Time::valid_char(str_min) && !str_h.empty() && !str_min.empty()) {
                 //Convert string to integer and check that they fall within allowed mm and hh ranges.
                 int tmp_h, tmp_min;
                 tmp_h = std::stoi(str_h);
