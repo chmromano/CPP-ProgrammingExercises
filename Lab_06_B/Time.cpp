@@ -1,5 +1,4 @@
 #include <cctype>
-#include <iomanip>
 #include "Time.h"
 
 Time::Time(int h_, int min_) : h(h_), min(min_) {}
@@ -29,6 +28,36 @@ void Time::read(const char *str) {
         }
         if (!valid_input) std::cout << "Invalid input. ";
     } while (!valid_input);
+}
+
+bool Time::read_from_string(const std::string &str) {
+    bool valid_input = true;
+
+    std::string str_h, str_min;
+    int delimiter = static_cast<int> (str.find(':'));
+    if (delimiter != std::string::npos) {
+        //Get substrings and check if they contain non-digit characters.
+        str_h = str.substr(0, delimiter);
+        str_min = str.substr(delimiter + 1, std::string::npos);
+        if (valid_char(str_h) && valid_char(str_min)) {
+            //Convert string to integer and check that they fall within allowed mm and hh ranges.
+            int tmp_h, tmp_min;
+            tmp_h = std::stoi(str_h);
+            tmp_min = std::stoi(str_min);
+            if (tmp_h >= 0 && tmp_h <= 23 && tmp_min >= 0 && tmp_min <= 59) {
+                h = tmp_h;
+                min = tmp_min;
+            } else {
+                valid_input = false;
+            }
+        } else {
+            valid_input = false;
+        }
+    } else {
+        valid_input = false;
+    }
+
+    return valid_input;
 }
 
 Time Time::operator+(const Time &time) const {

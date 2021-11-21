@@ -1,8 +1,9 @@
 #ifndef LAB_04_TIME_H
 #define LAB_04_TIME_H
 
+
 #include <iostream>
-#include <string>
+#include <iomanip>
 
 class Time {
     friend std::ostream &operator<<(std::ostream &out, const Time &time);
@@ -11,6 +12,8 @@ public:
     Time(int h_ = 0, int min_ = 0);
 
     void read(const char *str);
+
+    bool read_from_string(const std::string &str);
 
     Time subtract(Time time) const;
 
