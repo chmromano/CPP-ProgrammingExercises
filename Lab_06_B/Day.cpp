@@ -10,18 +10,15 @@ bool Day::from_str(const string &s) {
     month.erase(month.begin(), month.end());
     list.erase(list.begin(), list.end());
 
-    // Trim whitespace.
-    string tmp_string, no_whitespace;
     const char *whitespace = " \t\n\r\f\v";
+    string tmp_string, no_whitespace;
+
+    // Trim leading and trailing whitespace.
     int start = static_cast<int>(s.find_first_not_of(whitespace));
     int end = static_cast<int>(s.find_last_not_of(whitespace)) + 1;
-    if (end == s.size()) {
-        no_whitespace = s.substr(start, string::npos);
-    } else {
-        no_whitespace = s.substr(start, end - start);
-    }
+    no_whitespace = s.substr(start, end - start);
 
-    // Find day.
+    // Parse day.
     start = 0;
     end = static_cast<int>(no_whitespace.find(32, start));
     if (end == string::npos) return false;
@@ -29,7 +26,7 @@ bool Day::from_str(const string &s) {
     if (!valid_char(tmp_string)) return false;
     day = std::stoi(tmp_string);
 
-    // Find month.
+    // Parse month.
     while (no_whitespace.at(end) == 32) end++; // Loop in case there are multiple spaces between string items.
     start = end;
     end = static_cast<int>(no_whitespace.find(32, start));
@@ -38,7 +35,8 @@ bool Day::from_str(const string &s) {
     if (!valid_month(tmp_string)) return false;
     month = tmp_string;
 
-    // Find times.
+    // Parse times. When whitespace is not found anymore it means it is the last time in the string, therefore read
+    // create substring from start until end of string.
     int times_found = 0;
     bool run = true;
     while (run) {
@@ -58,7 +56,7 @@ bool Day::from_str(const string &s) {
             list.push_back(tmp_time);
             times_found++;
         } else {
-            break;
+            run = false;
         }
     }
 
@@ -80,7 +78,7 @@ string Day::to_str() {
 }
 
 void Day::dst(int offset) {
-    // Initialise Time object with hour = offset.
+    // Initialise Time object with offset as hour value.
     Time dst_offset(offset);
     for (Time &tmp: list) {
         tmp = tmp + dst_offset;
@@ -98,6 +96,7 @@ bool Day::valid_char(const string &str) {
     return valid;
 }
 
+// Function to check if the month contained is the string is a valid month name.
 bool Day::valid_month(const string &str) {
     bool valid = false;
     vector<string> month_list = {"January", "February", "March", "April", "May", "June", "July", "August",

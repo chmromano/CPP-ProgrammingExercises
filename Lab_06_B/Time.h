@@ -39,7 +39,6 @@ public:
 
     bool operator==(const Time &time) const;
 
-    //Now unused.
     void display() const;
 
 private:

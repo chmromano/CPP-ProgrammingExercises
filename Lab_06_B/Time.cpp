@@ -30,8 +30,10 @@ void Time::read(const char *str) {
     } while (!valid_input);
 }
 
+// Newly defined function to read the time from a string. It was needed for this lab since the previously defined ones
+// relied on a loop.
 bool Time::read_from_string(const std::string &str) {
-    bool valid_input = true;
+    bool valid_input = false;
 
     std::string str_h, str_min;
     int delimiter = static_cast<int> (str.find(':'));
@@ -47,14 +49,9 @@ bool Time::read_from_string(const std::string &str) {
             if (tmp_h >= 0 && tmp_h <= 23 && tmp_min >= 0 && tmp_min <= 59) {
                 h = tmp_h;
                 min = tmp_min;
-            } else {
-                valid_input = false;
+                valid_input = true;
             }
-        } else {
-            valid_input = false;
         }
-    } else {
-        valid_input = false;
     }
 
     return valid_input;
@@ -74,7 +71,6 @@ Time Time::operator+(const Time &time) const {
     return result;
 }
 
-//I can reuse previous methods for - and < in the overloaded methods.
 Time Time::subtract(Time time) const {
     Time result;
     result.min = min - time.min;
@@ -177,7 +173,6 @@ std::istream &operator>>(std::istream &in, Time &time) {
     return in;
 }
 
-//Pre ++ method.
 Time &Time::operator++() {
     ++min;
     if (min > 59) {
@@ -190,7 +185,6 @@ Time &Time::operator++() {
     return *this;
 }
 
-//Post ++ method.
 Time Time::operator++(int) {
     Time old = *this;
     ++min;
@@ -204,7 +198,6 @@ Time Time::operator++(int) {
     return old;
 }
 
-//Helper function to check if a string contains non-digit characters.
 bool Time::valid_char(const std::string &str) {
     bool valid = true;
     for (const char &ch: str) {

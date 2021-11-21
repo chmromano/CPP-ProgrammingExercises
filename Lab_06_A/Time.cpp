@@ -47,7 +47,6 @@ Time Time::operator+(const Time &time) const {
     return result;
 }
 
-//I can reuse previous methods for - and < in the overloaded methods.
 Time Time::subtract(Time time) const {
     Time result;
     result.min = min - time.min;
@@ -110,7 +109,6 @@ bool Time::operator==(const Time &time) const {
     return this->isEqual(time);
 }
 
-//I don't know if it's possible to reuse the display method for the << overloaded operator method.
 void Time::display() const {
     std::cout << std::setiosflags(std::ios::right);
     std::cout << std::setfill('0') << std::setw(2) << h;
@@ -151,7 +149,6 @@ std::istream &operator>>(std::istream &in, Time &time) {
     return in;
 }
 
-//Pre ++ method.
 Time &Time::operator++() {
     ++min;
     if (min > 59) {
@@ -164,7 +161,6 @@ Time &Time::operator++() {
     return *this;
 }
 
-//Post ++ method.
 Time Time::operator++(int) {
     Time old = *this;
     ++min;
@@ -178,7 +174,6 @@ Time Time::operator++(int) {
     return old;
 }
 
-//Helper function to check if a string contains non-digit characters.
 bool Time::valid_char(const std::string &str) {
     bool valid = true;
     for (const char &ch: str) {
