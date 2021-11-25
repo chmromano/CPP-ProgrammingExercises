@@ -35,14 +35,14 @@ vector<int> find_match(vector<int> vector1, vector<int> vector2);
 int yes_no();
 
 int main() {
-    int ch = 'Y';
+    int ch;
+    int index;
 
-    // Initialise necessary vectors and objects.
+    // Initialise necessary vectors and RangGen objects.
     vector<int> lotto(7), viking(6), eurojackpot(5), matches;
     RandGen lotto_gen(1, 40), viking_gen(1, 48), eurojackpot_gen(1, 50);
 
     // Lambda for printing.
-    int index;
     auto lambda = [&index](int i) {
         cout << "#" << index << ": " << i << endl;
         index++;
@@ -53,33 +53,38 @@ int main() {
         generate(lotto.begin(), lotto.end(), lotto_gen);
         cout << "Lotto: ";
         print_vect(lotto);
-        cout << endl;
 
         // Generate Viking Lotto numbers.
         generate(viking.begin(), viking.end(), viking_gen);
         cout << "Viking Lotto: ";
         print_vect(viking);
-        cout << endl;
 
         // Find matches and print them.
         matches = find_match(lotto, viking);
         cout << "Matching numbers: ";
-        cout << endl;
-        index = 1;
-        for_each(matches.begin(), matches.end(), lambda);
+        if (matches.empty()) {
+            cout << "none" << endl;
+        } else {
+            cout << endl;
+            index = 1;
+            for_each(matches.begin(), matches.end(), lambda);
+        }
 
         // Generate EuroJackpot numbers.
         generate(eurojackpot.begin(), eurojackpot.end(), eurojackpot_gen);
         cout << "EuroJackpot: ";
         print_vect(eurojackpot);
-        cout << endl;
 
         // Find matches and print them.
         matches = find_match(matches, eurojackpot);
         cout << "Matching numbers: ";
-        cout << endl;
-        index = 1;
-        for_each(matches.begin(), matches.end(), lambda);
+        if (matches.empty()) {
+            cout << "none" << endl;
+        } else {
+            cout << endl;
+            index = 1;
+            for_each(matches.begin(), matches.end(), lambda);
+        }
 
         // Ask user to continue.
         ch = yes_no();
@@ -92,6 +97,7 @@ int main() {
 void print_vect(const vector<int> &vect) {
     ostream_iterator<int> cout_it(cout, " ");
     copy(vect.begin(), vect.end(), cout_it);
+    cout << endl;
 }
 
 // Find the matches.
@@ -110,7 +116,7 @@ vector<int> find_match(vector<int> vector1, vector<int> vector2) {
 int yes_no() {
     char ch;
     while (true) {
-        cout << "Do you want to continue (Y/N)?" << endl;
+        cout << "Do you want to continue (Y/N)? ";
         cin >> ch;
         if (!cin.good()) {
             cin.clear();
