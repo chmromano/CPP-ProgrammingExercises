@@ -16,6 +16,7 @@ bool Day::from_str(const string &s) {
     // Trim leading and trailing whitespace.
     int start = static_cast<int>(s.find_first_not_of(whitespace));
     int end = static_cast<int>(s.find_last_not_of(whitespace)) + 1;
+    if (end == string::npos || start == string::npos) return false;
     no_whitespace = s.substr(start, end - start);
 
     // Parse day.
@@ -27,7 +28,17 @@ bool Day::from_str(const string &s) {
     day = std::stoi(tmp_string);
 
     // Parse month.
-    while (no_whitespace.at(end) == 32) end++; // Loop in case there are multiple spaces between string items.
+    while (true) {
+        try {
+            if (no_whitespace.at(end) == 32) {
+                end++;
+            } else {
+                break;
+            }
+        } catch (const std::out_of_range &oor) {
+            break;
+        }
+    }
     start = end;
     end = static_cast<int>(no_whitespace.find(32, start));
     if (end == string::npos) return false;
@@ -41,7 +52,17 @@ bool Day::from_str(const string &s) {
     bool run = true;
     while (run) {
         Time tmp_time;
-        while (no_whitespace.at(end) == 32) end++;
+        while (true) {
+            try {
+                if (no_whitespace.at(end) == 32) {
+                    end++;
+                } else {
+                    break;
+                }
+            } catch (const std::out_of_range &oor) {
+                break;
+            }
+        }
         start = end;
         end = static_cast<int>(no_whitespace.find(32, start));
 
