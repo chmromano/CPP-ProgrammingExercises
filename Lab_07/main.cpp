@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
-#include <algorithm> // One compiler was complaining that I didn't include this for generator, but another was fine ¯\_(ツ)_/¯
 #include <iterator>
+// Some compilers were complaining that I didn't include these, but others were fine, so ¯\_(ツ)_/¯
+#include <algorithm>
 #include <numeric>
 
 using namespace std;
