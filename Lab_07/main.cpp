@@ -1,7 +1,13 @@
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <algorithm> // One compiler was complaining that I didn't include this for generator, but another was fine ¯\_(ツ)_/¯
+#include <iterator>
+#include <numeric>
 
 using namespace std;
+
+// For this assignment splitting the program into multiple files didn't seem necessary.
 
 // Class ---------------------------------------------------------------------------------------------------------------
 
@@ -95,8 +101,8 @@ int main() {
 
 // Print the vector.
 void print_vect(const vector<int> &vect) {
-    ostream_iterator<int> cout_it(cout, " ");
-    copy(vect.begin(), vect.end(), cout_it);
+    ostream_iterator<int> it(cout, " ");
+    copy(vect.begin(), vect.end(), it);
     cout << endl;
 }
 
