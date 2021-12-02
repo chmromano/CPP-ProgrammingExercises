@@ -6,66 +6,46 @@
 
 class Person {
 public:
-    Person(const char *name_ = "nobody");
+    Person(const char *name_ = "nobody") : name(name_) {};
 
     virtual ~Person() = default;
 
-    virtual void identity() const;
+    virtual void identity() const { std::cout << name << std::endl; };
 
-    virtual void interrogate();
+    virtual void interrogate() {};
 
 protected:
     std::string name;
 };
-
-Person::Person(const char *name_) : name(name_) {}
-
-void Person::identity() const {
-    std::cout << name << std::endl;
-}
-
-void Person::interrogate() {}
 
 
 // Spy class -----------------------------------------------------------------------------------------------------------
 
 class Spy : public Person {
 public:
-    Spy(const char *name_, const char *alias_, int resistance_);
+    Spy(const char *name_ = "nobody", const char *alias_ = "nobody", int resistance_ = 0) :
+            Person(name_), alias(alias_), resistance(resistance_) {
+    };
 
-    void set_identity(const char *alias_);
+    void set_identity(const char *alias_) { alias = alias_; };
 
-    void identity() const override;
+    void identity() const override {
+        if (resistance == 0) {
+            std::cout << "My name is: " << name << std::endl;
+            // Person::identity(); Can use this if data members of Person class are private (here
+            // I have set them as protected).
+            std::cout << "My alias is: " << alias << std::endl;
+        } else {
+            std::cout << "My name is: " << alias << std::endl;
+        }
+    };
 
-    void interrogate() override;
+    void interrogate() override { if (resistance > 0) resistance--; };
 
 private:
     std::string alias;
     int resistance;
 };
-
-Spy::Spy(const char *name_, const char *alias_, const int resistance_) :
-        Person(name_), alias(alias_), resistance(resistance_) {
-}
-
-void Spy::set_identity(const char *alias_) {
-    alias = alias_;
-}
-
-void Spy::identity() const {
-    if (resistance == 0) {
-        std::cout << "My name is: " << name << std::endl;
-        // Person::identity(); Can use this if data members of Person class are private (here
-        // I have set them as protected).
-        std::cout << "My alias is: " << alias << std::endl;
-    } else {
-        std::cout << "My name is: " << alias << std::endl;
-    }
-}
-
-void Spy::interrogate() {
-    if (resistance > 0) resistance--;
-}
 
 
 // Main ----------------------------------------------------------------------------------------------------------------
