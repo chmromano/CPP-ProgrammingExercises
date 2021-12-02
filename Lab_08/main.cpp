@@ -12,11 +12,11 @@ public:
 
     virtual ~Person() = default;
 
-    virtual void identity() const { std::cout << name << std::endl; };
+    virtual void identity() const { std::cout << "My name is: " << name << std::endl; };
 
     virtual void interrogate() {};
 
-protected:
+private:
     std::string name;
 };
 
@@ -33,9 +33,7 @@ public:
 
     void identity() const override {
         if (resistance == 0) {
-            std::cout << "My name is: " << name << std::endl;
-            // Person::identity(); Can use this if data members of Person class are private (here
-            // I have set them as protected).
+            Person::identity();
             std::cout << "My alias is: " << alias << std::endl;
         } else {
             std::cout << "My name is: " << alias << std::endl;
