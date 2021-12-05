@@ -1,3 +1,5 @@
+// Christopher Romano
+
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -100,21 +102,25 @@ void print(const vector<shared_ptr<Point>> &v);
 
 int main() {
 
+    srand(time(nullptr));
+
     vector<shared_ptr<Point>> vect;
 
-    shared_ptr<Point> p;
-
-    p = make_shared<Point>();
-    p->input("Point:");
-    vect.push_back(p);
-
-    p = make_shared<Circle>();
-    p->input("Circle:");
-    vect.push_back(p);
-
-    p = make_shared<Square>();
-    p->input("Square:");
-    vect.push_back(p);
+    for (int i = 0; i < 5; i++) {
+        shared_ptr<Point> p;
+        int rnd = rand() % 3;
+        if (rnd == 0) {
+            p = make_shared<Point>();
+            p->input("Point:");
+        } else if (rnd == 1) {
+            p = make_shared<Circle>();
+            p->input("Circle:");
+        } else if (rnd == 2) {
+            p = make_shared<Square>();
+            p->input("Square:");
+        }
+        vect.push_back(p);
+    }
 
     print(vect);
 
