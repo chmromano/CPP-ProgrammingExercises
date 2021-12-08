@@ -15,6 +15,8 @@ private:
 public:
     Point(double x_coord = 0.0, double y_coord = 0.0) : x(x_coord), y(y_coord) {};
 
+    Point(const Point &point_) : x(point_.x), y(point_.y) {};
+
     virtual ~Point() = default;
 
     virtual void input(const char *prompt) {
@@ -48,6 +50,10 @@ public:
     Circle(double x_coord = 0.0, double y_coord = 0.0, double radius_ = 0.0) :
             Point(x_coord, y_coord), radius(radius_) {};
 
+    Circle(const Point &point_, double radius_ = 0.0) : Point(point_), radius(radius_) {};
+
+    Circle(const Circle &circle_) : Point(circle_), radius(circle_.radius) {};
+
     void input(const char *prompt) override {
         Point::input(prompt);
         cout << "Enter radius: ";
@@ -60,8 +66,6 @@ public:
     };
 
     double area() const override { return pi * radius * radius; };
-
-    // Circle(const Point &point_, double radius_ = 0.0) : Point(point_), radius(radius_) {}; TEST
 
     static const double pi;
 };
@@ -78,6 +82,11 @@ private:
 public:
     Square(double x_coord = 0.0, double y_coord = 0.0, double width_ = 0.0, double height_ = 0.0) :
             Point(x_coord, y_coord), width(width_), height(height_) {};
+
+    Square(const Point &point_, double width_ = 0.0, double height_ = 0.0) :
+            Point(point_), width(width_), height(height_) {};
+
+    Square(const Square &square_) : Point(square_), width(square_.width), height(square_.height) {};
 
     void input(const char *prompt) override {
         Point::input(prompt);
