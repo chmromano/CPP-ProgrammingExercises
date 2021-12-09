@@ -1,5 +1,9 @@
 // Christopher Romano
 
+// Program won't cause an error if counter object is initialised with value bigger than upper limit or smaller than 0,
+// but it will behave accordingly. For value bigger than upper limit: reset to zero if increasing, behave normally if
+// decreasing. For value smaller than zero: reset to upper limit if decreasing, behave normally if increasing.
+
 #include <iostream>
 
 using namespace std;
@@ -33,7 +37,7 @@ public:
     };
 
     void dec() override {
-        if (value != 0) value--;
+        if (value > 0) value--;
     };
 
     operator int() override {
@@ -52,7 +56,7 @@ public:
     OverflowCounter(int value_ = 0, int upper_lim_ = 0) : value(value_), upper_lim(upper_lim_) {};
 
     void inc() override {
-        if (value == upper_lim) {
+        if (value >= upper_lim) {
             value = 0;
         } else {
             value++;
@@ -60,7 +64,7 @@ public:
     };
 
     void dec() override {
-        if (value == 0) {
+        if (value <= 0) {
             value = upper_lim;
         } else {
             value--;
