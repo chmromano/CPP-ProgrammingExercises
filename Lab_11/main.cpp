@@ -51,6 +51,7 @@ public:
     void dec() override {
         if (value <= 0) {
             value = upperLim;
+            this->Notify();
         } else {
             value--;
         }
@@ -83,14 +84,12 @@ public:
     }
 
     void HandleLimitReached() override {
-        cout << "Limit reached." << endl;
+        cout << "Limit has been reached." << endl;
     }
 };
 
 
 // Main ----------------------------------------------------------------------------------------------------------------
-
-void UseCounter(Counter &ctr, int num);
 
 int main() {
     CounterUser cu(5);
