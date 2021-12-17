@@ -34,7 +34,7 @@ public:
 };
 
 
-// DerivedObserver class ---------------------------------------------------------------------------------------------
+// DerivedObserver class -----------------------------------------------------------------------------------------------
 
 class DerivedObserver : public CounterObserver {
 private:
