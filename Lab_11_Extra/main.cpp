@@ -1,7 +1,6 @@
 // Christopher Romano
 
 #include <iostream>
-#include <utility>
 #include <vector>
 
 using namespace std;
@@ -35,13 +34,14 @@ public:
 };
 
 
-// InheritedObserver class ---------------------------------------------------------------------------------------------
+// DerivedObserver class ---------------------------------------------------------------------------------------------
 
-class InheritedObserver : public CounterObserver {
+class DerivedObserver : public CounterObserver {
 private:
     string name;
 public:
-    InheritedObserver(string name_) : name(std::move(name_)) {};
+    // String has its own move method.
+    DerivedObserver(string name_) : name(std::move(name_)) {};
 
     void HandleLimitReached(Counter *ctr) override {
         cout << "[" << name << "] Limit has been reached. Value: " << *ctr << endl;
@@ -63,7 +63,7 @@ private:
         }
     };
 public:
-    OverflowCounter(int value_ = 0, int upperLim_ = 0) : value(value_), upperLim(upperLim_) {};
+    OverflowCounter(int value_ = 0, int upperLim_ = 10) : value(value_), upperLim(upperLim_) {};
 
     void inc() override {
         if (value >= upperLim) {
@@ -98,7 +98,7 @@ public:
 class LimitedCounter : public Counter {
 private:
     int value;
-    int upper_lim;
+    int upperLim;
     vector<CounterObserver *> obs;
 
     void Notify() {
@@ -107,10 +107,10 @@ private:
         }
     };
 public:
-    LimitedCounter(int value_ = 0, int upper_lim_ = 0) : value(value_), upper_lim(upper_lim_) {};
+    LimitedCounter(int value_ = 0, int upperLim_ = 10) : value(value_), upperLim(upperLim_) {};
 
     void inc() override {
-        if (value < upper_lim) {
+        if (value < upperLim) {
             value++;
         } else {
             Notify();
@@ -140,19 +140,48 @@ public:
 void UseCounter(Counter &ctr, int num);
 
 int main() {
-    InheritedObserver overflowObserver("OVF_OBS"), limitedObserver("LIM_OBS"), sharedObserver("SHR_OBS");
+    // Creating objects.
+    DerivedObserver overflowObserver("OVF-OBS"), limitedObserver("LIM-OBS"), sharedObserver("SHR-OBS");
     OverflowCounter overflowCounter(0, 5);
     LimitedCounter limitedCounter(0, 10);
 
+    // Assigning OVF-OBS observer to the overflow counter and testing. Counter at 0.
     overflowCounter.SetObserver(&overflowObserver);
-    overflowCounter.SetObserver(&sharedObserver);
+    cout << "Testing overflowCounter with OVF-OBS (value = 0):" << endl;
+    UseCounter(overflowCounter, 6); // Ceiling is reached once.
+    UseCounter(overflowCounter, 12); // ceiling is reached twice.
+    UseCounter(overflowCounter, -8); // Floor is reached twice.
+    UseCounter(overflowCounter, 1); // Nothing happens.
+    UseCounter(overflowCounter, 1); // Ceiling is reached once.
 
+    // Assigning LIM-OBS observer to the limited counter and testing.
     limitedCounter.SetObserver(&limitedObserver);
+    cout << endl << "Testing limitedCounter with LIM-OBS (value = 0):" << endl;
+    UseCounter(limitedCounter, 11); // Ceiling is reached once.
+    UseCounter(limitedCounter, 3); // Ceiling is reached thrice.
+    UseCounter(limitedCounter, -10); // Nothing happens.
+    UseCounter(limitedCounter, -1); // Floor is reached once.
+    UseCounter(limitedCounter, -2); // Floor is reached twice.
+
+    // Assigning SHR-OBS observer to both counters and testing.
+    overflowCounter.SetObserver(&sharedObserver);
     limitedCounter.SetObserver(&sharedObserver);
+    cout << endl << "Testing overflowCounter with OVF-OBS and SHR-OBS (value = 0):" << endl;
+    UseCounter(overflowCounter, 6); // Ceiling is reached once.
+    UseCounter(overflowCounter, 12); // ceiling is reached twice.
+    UseCounter(overflowCounter, -8); // Floor is reached twice.
+    UseCounter(overflowCounter, 1); // Nothing happens.
+    UseCounter(overflowCounter, 1); // Ceiling is reached once.
+    cout << endl << "Testing overflowCounter with LIM-OBS and SHR-OBS (value = 0):" << endl;
+    UseCounter(limitedCounter, 11); // Ceiling is reached once.
+    UseCounter(limitedCounter, 3); // Ceiling is reached thrice.
+    UseCounter(limitedCounter, -10); // Nothing happens.
+    UseCounter(limitedCounter, -1); // Floor is reached once.
+    UseCounter(limitedCounter, -2); // Floor is reached twice.
 
-    UseCounter(overflowCounter, 9);
-
-    UseCounter(limitedCounter, 11);
+    cout << endl
+         << "Same test results but notified twice for each limit (one notification per observer)."
+         << endl;
 }
 
 void UseCounter(Counter &ctr, int num) {
