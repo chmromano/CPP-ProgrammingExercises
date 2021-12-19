@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <exception>
-#include <algorithm>
 #include <ctime>
 
 using namespace std;
