@@ -1,13 +1,7 @@
-// Christopher Romano
-
-// To do:
-// -Check all * (asterisks)
-
 #define _CRTDBG_MAP_ALLOC
 
 #include <stdlib.h>
 #include <crtdbg.h>
-
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -23,7 +17,6 @@ class Car {
     friend std::ostream &operator<<(std::ostream &out, const Car &car) {
         std::cout << "Model: " << car.model << std::endl << "License: " << car.license << std::endl << "Mileage: "
                   << car.mileage << std::endl;
-
         return out;
     }
 
@@ -58,23 +51,27 @@ public:
 
 class Website {
 private:
-    std::vector<std::shared_ptr<Car>> listing;
+    std::vector<Car *> listing;
     std::string name;
 public:
     Website(const char *n = nullptr) : name(n ? n : "www.cars" + std::to_string(rand() % 99 + 1) + ".com") {}
 
-    ~Website() { std::cout << name << " deleted" << std::endl; }
+    ~Website() {
+        std::cout << name << " deleted" << std::endl;
+    }
 
-    void advertise(const std::shared_ptr<Car> &car) {
+    void advertise(Car *car) {
         listing.push_back(car);
     }
 
-    void print(std::ostream &out = std::cout, const std::shared_ptr<Car> &car = nullptr) {
-        listing.erase(std::remove(listing.begin(), listing.end(), car), listing.end());
-
+    void print(std::ostream &out = std::cout) {
         out << name << std::endl;
-        for (const auto &i: listing) out << *i;
+        for (auto car: listing) out << *car;
         out << name << " end of list" << std::endl;
+    }
+
+    void remove(Car *car) {
+        listing.erase(std::remove(listing.begin(), listing.end(), car), listing.end());
     }
 };
 
@@ -86,21 +83,22 @@ class Dealer {
         std::cout << dealer.name << "'s cars for sale" << std::endl;
         for (auto car: dealer.cars) std::cout << *car;
         std::cout << "End of " << dealer.name << "'s cars listing" << std::endl;
-
         return out;
     }
 
 private:
     std::string name;
-    std::vector<std::shared_ptr<Car>> cars;
-    std::vector<std::shared_ptr<Website>> sites;
+    std::vector<Car *> cars;
+    std::vector<Website *> sites;
 public:
-    Dealer(const char *name_ = "John Doe") : name(name_) {}
+    Dealer(const char *name_ = "John Doe") : name(name_) {};
 
-    ~Dealer() { std::cout << name << " deleted" << std::endl; }
+    ~Dealer() {
+        std::cout << name << " deleted" << std::endl;
+    };
 
     void buy() {
-        std::shared_ptr<Car> car = std::make_shared<Car>();
+        Car *car = new Car;
         car->Read();
         add(car);
     }
@@ -111,23 +109,27 @@ public:
 
         std::string license;
         std::cin >> license;
-        auto ci = std::find_if(cars.begin(), cars.end(),
-                               [&license](const std::shared_ptr<Car> &c) {
-                                   return license == c->GetLicense();
-                               });
+
+        // Lambda
+        auto ci = std::find_if(cars.begin(), cars.end(), [&license](Car *c) {
+            return license == c->GetLicense();
+        });
+
         if (ci != cars.end()) {
+            for (auto site: sites) site->remove(*ci); // modify code wso that this is not needed
             cars.erase(ci);
         }
     }
 
-    void add(const std::shared_ptr<Car> &car) {
+    void add(Car *car) {
         cars.push_back(car);
-        for (const auto &site: sites) {
+        for (auto site: sites) {
             site->advertise(car);
         }
     }
 
-    void add_site(const std::shared_ptr<Website> &w) {
+
+    void add_site(Website *w) {
         sites.push_back(w);
     }
 };
@@ -137,19 +139,15 @@ public:
 
 void car_sales() {
     std::cout << "Car sales started" << std::endl;
-
-    std::shared_ptr<Website> wa = std::make_shared<Website>("www.autos.com");
-    std::shared_ptr<Website> wb = std::make_shared<Website>("www.bilar.com");
-    std::shared_ptr<Website> wc = std::make_shared<Website>("www.cars.com");
-
-    std::shared_ptr<Dealer> a = std::make_shared<Dealer>("Alan Aldis");
-    std::shared_ptr<Dealer> b = std::make_shared<Dealer>("Bill Munny");
-
+    Website *wa = new Website("www.autos.com");
+    Website *wb = new Website("www.bilar.com");
+    Website *wc = new Website("www.cars.com");
+    Dealer *a = new Dealer("Alan Aldis");
+    Dealer *b = new Dealer("Bill Munny");
     {
-        std::shared_ptr<Dealer> c = std::make_shared<Dealer>("Casey Ball");
-
-        std::shared_ptr<Car> ca = std::make_shared<Car>();
-        std::shared_ptr<Car> cb = std::make_shared<Car>();
+        Dealer *c = new Dealer("Casey Ball");
+        Car *ca = new Car;
+        Car *cb = new Car;
 
         a->add_site(wa);
         a->add_site(wb);
@@ -192,14 +190,16 @@ void car_sales() {
     wb->print();
     wc->print();
 
+
     std::cout << "Car sales ended" << std::endl;
+
 }
 
 int main(int argc, char **argv) {
     _CrtMemState s1;
     _CrtMemCheckpoint(&s1);
 
-    srand(time(nullptr));
+    srand(time(NULL));
 
     car_sales();
 
@@ -212,3 +212,5 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+
