@@ -4,3 +4,4 @@ project(Lab_13)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Lab_13 main.cpp)
+#add_executable(Lab_13 original_main_formatted.cpp)

@@ -1,13 +1,9 @@
 // Christopher Romano
 
-// To do:
-// -Check all * (asterisks)
-
 #define _CRTDBG_MAP_ALLOC
 
 #include <stdlib.h>
 #include <crtdbg.h>
-
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -58,22 +54,26 @@ public:
 
 class Website {
 private:
-    std::vector<std::shared_ptr<Car>> listing;
     std::string name;
+    std::vector<std::weak_ptr<Car>> listing;
 public:
     Website(const char *n = nullptr) : name(n ? n : "www.cars" + std::to_string(rand() % 99 + 1) + ".com") {}
 
-    ~Website() { std::cout << name << " deleted" << std::endl; }
+    ~Website() {
+        std::cout << name << " deleted" << std::endl;
+    }
 
-    void advertise(const std::shared_ptr<Car> &car) {
+    void advertise(const std::weak_ptr<Car> &car) {
         listing.push_back(car);
     }
 
-    void print(std::ostream &out = std::cout, const std::shared_ptr<Car> &car = nullptr) {
-        listing.erase(std::remove(listing.begin(), listing.end(), car), listing.end());
+    void print(std::ostream &out = std::cout) {
+
+        listing.erase(std::remove_if(listing.begin(), listing.end(),
+                                     [](std::weak_ptr<Car> &c) { return c.expired(); }), listing.end());
 
         out << name << std::endl;
-        for (const auto &i: listing) out << *i;
+        for (const auto &car: listing) out << *car.lock();
         out << name << " end of list" << std::endl;
     }
 };
@@ -86,7 +86,6 @@ class Dealer {
         std::cout << dealer.name << "'s cars for sale" << std::endl;
         for (auto car: dealer.cars) std::cout << *car;
         std::cout << "End of " << dealer.name << "'s cars listing" << std::endl;
-
         return out;
     }
 
@@ -95,9 +94,11 @@ private:
     std::vector<std::shared_ptr<Car>> cars;
     std::vector<std::shared_ptr<Website>> sites;
 public:
-    Dealer(const char *name_ = "John Doe") : name(name_) {}
+    Dealer(const char *name_ = "John Doe") : name(name_) {};
 
-    ~Dealer() { std::cout << name << " deleted" << std::endl; }
+    ~Dealer() {
+        std::cout << name << " deleted" << std::endl;
+    };
 
     void buy() {
         std::shared_ptr<Car> car = std::make_shared<Car>();
@@ -106,15 +107,16 @@ public:
     }
 
     void sell() {
-        std::cout << *this; // print my list of cars
+        std::cout << *this;
         std::cout << "Enter license of car you want to buy" << std::endl;
 
         std::string license;
         std::cin >> license;
-        auto ci = std::find_if(cars.begin(), cars.end(),
-                               [&license](const std::shared_ptr<Car> &c) {
-                                   return license == c->GetLicense();
-                               });
+
+        auto ci = std::find_if(cars.begin(), cars.end(), [&license](const std::shared_ptr<Car> &c) {
+            return license == c->GetLicense();
+        });
+
         if (ci != cars.end()) {
             cars.erase(ci);
         }
@@ -127,6 +129,7 @@ public:
         }
     }
 
+
     void add_site(const std::shared_ptr<Website> &w) {
         sites.push_back(w);
     }
@@ -138,18 +141,18 @@ public:
 void car_sales() {
     std::cout << "Car sales started" << std::endl;
 
-    std::shared_ptr<Website> wa = std::make_shared<Website>("www.autos.com");
-    std::shared_ptr<Website> wb = std::make_shared<Website>("www.bilar.com");
-    std::shared_ptr<Website> wc = std::make_shared<Website>("www.cars.com");
+    auto wa = std::make_shared<Website>("www.autos.com");
+    auto wb = std::make_shared<Website>("www.bilar.com");
+    auto wc = std::make_shared<Website>("www.cars.com");
 
-    std::shared_ptr<Dealer> a = std::make_shared<Dealer>("Alan Aldis");
-    std::shared_ptr<Dealer> b = std::make_shared<Dealer>("Bill Munny");
+    auto a = std::make_shared<Dealer>("Alan Aldis");
+    auto b = std::make_shared<Dealer>("Bill Munny");
 
     {
-        std::shared_ptr<Dealer> c = std::make_shared<Dealer>("Casey Ball");
+        auto c = std::make_shared<Dealer>("Casey Ball");
 
-        std::shared_ptr<Car> ca = std::make_shared<Car>();
-        std::shared_ptr<Car> cb = std::make_shared<Car>();
+        auto ca = std::make_shared<Car>();
+        auto cb = std::make_shared<Car>();
 
         a->add_site(wa);
         a->add_site(wb);
